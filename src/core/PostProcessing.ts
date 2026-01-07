@@ -50,30 +50,38 @@ const customShader = {
     `
 };
 
+let composer: EffectComposer | null = null;
+let customPass: ShaderPass | null = null;
+
 export function createPostProcessing(
     renderer: THREE.WebGLRenderer,
     scene: THREE.Scene,
     camera: THREE.Camera
 ): { composer: EffectComposer; customPass: ShaderPass } {
-    const composer = new EffectComposer(renderer);
+    composer = new EffectComposer(renderer);
 
     // First pass: render the scene normally
     const renderPass = new RenderPass(scene, camera);
     composer.addPass(renderPass);
 
     // Second pass: apply custom shader effects
-    const customPass = new ShaderPass(customShader);
+    customPass = new ShaderPass(customShader);
     customPass.uniforms.uResolution!.value.set(window.innerWidth, window.innerHeight);
     composer.addPass(customPass);
+
+    // Set up resize listener
+    window.addEventListener('resize', handleResize);
 
     return { composer, customPass };
 }
 
-export function updatePostProcessing(customPass: ShaderPass, time: number): void {
-    customPass.uniforms.uTime!.value = time;
+function handleResize(): void {
+    if (composer && customPass) {
+        composer.setSize(window.innerWidth, window.innerHeight);
+        customPass.uniforms.uResolution!.value.set(window.innerWidth, window.innerHeight);
+    }
 }
 
-export function resizePostProcessing(composer: EffectComposer, customPass: ShaderPass): void {
-    composer.setSize(window.innerWidth, window.innerHeight);
-    customPass.uniforms.uResolution!.value.set(window.innerWidth, window.innerHeight);
+export function updatePostProcessing(customPass: ShaderPass, time: number): void {
+    customPass.uniforms.uTime!.value = time;
 }
