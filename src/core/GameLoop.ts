@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { objectManager } from './ObjectManager';
+import { physicsManager } from './PhysicsManager';
 import type { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
 import type { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass';
 import { updatePostProcessing } from './PostProcessing';
@@ -12,18 +13,26 @@ export function startGameLoop(
     customPass?: ShaderPass
 ) {
     const clock = new THREE.Clock();
+    let lastTime = 0;
 
     function animate() {
         requestAnimationFrame(animate);
 
-        const elapsedTime = clock.getElapsedTime();
+        const currentTime = clock.getElapsedTime();
+        const deltaTime = currentTime - lastTime;
+        lastTime = currentTime;
+
+        // Step physics simulation
+        if (physicsManager.isInitialized()) {
+            physicsManager.step(deltaTime);
+        }
 
         // Update all game objects with time
-        objectManager.update(elapsedTime);
+        objectManager.update(currentTime);
 
         // Update post-processing shader uniforms
         if (customPass) {
-            updatePostProcessing(customPass, elapsedTime);
+            updatePostProcessing(customPass, currentTime);
         }
 
         // Render using composer if available, otherwise use renderer directly

@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { scene } from './Scene';
 import { createSpawnableObject } from '../objects/SpawnableObject';
 import { eventBus } from './EventBus';
+import { physicsManager } from './PhysicsManager';
 import type { ShapeType, ShaderType } from '../types';
 
 class ObjectManager {
@@ -35,6 +36,11 @@ class ObjectManager {
     private deleteObject(object: THREE.Mesh): void {
         const index = this.objects.indexOf(object);
         if (index > -1) {
+            // Remove from physics
+            if (physicsManager.isInitialized()) {
+                physicsManager.removeBody(object);
+            }
+
             scene.remove(object);
             this.objects.splice(index, 1);
             eventBus.emit('object:deleted', { object });
@@ -48,7 +54,8 @@ class ObjectManager {
     update(deltaTime: number): void {
         // Update shader uniforms for all objects
         this.objects.forEach(obj => {
-            obj.rotation.y += 0.01;
+            // Note: Physics bodies don't need manual rotation anymore
+            // Rapier handles all transforms
 
             // Update shader time uniform if material is ShaderMaterial
             if (obj.material instanceof THREE.ShaderMaterial) {
@@ -57,6 +64,17 @@ class ObjectManager {
                 }
             }
         });
+    }
+
+    clear(): void {
+        // Remove all objects
+        this.objects.forEach(obj => {
+            if (physicsManager.isInitialized()) {
+                physicsManager.removeBody(obj);
+            }
+            scene.remove(obj);
+        });
+        this.objects = [];
     }
 }
 

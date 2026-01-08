@@ -27,6 +27,7 @@ export function initInput() {
             if (clickedObject === platform) {
                 const point = intersects[0]!.point;
                 const selectedShape = getSelectedShape() as ShapeType;
+                console.log(point)
                 eventBus.emit('spawn-object', { shape: selectedShape, position: point });
             }
             // Handle clicks on spawned objects
