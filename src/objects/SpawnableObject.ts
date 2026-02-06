@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import type { ShapeType, ShaderType } from '../types';
 import { createRainbowMaterial } from '../shaders/RainbowShader';
 import { createFresnelMaterial } from '../shaders/FresnelShader';
+import { createStripesMaterial } from '../shaders/StripesShader';
 import { physicsManager } from '../core/PhysicsManager';
 
 export function createSpawnableObject(
@@ -25,6 +26,8 @@ export function createSpawnableObject(
     } else if (shaderType === 'fresnel') {
         const baseColor = new THREE.Color(color ?? Math.random() * 0xffffff);
         material = createFresnelMaterial(baseColor);
+    } else if (shaderType === 'stripes') {
+        material = createStripesMaterial();
     } else {
         material = new THREE.MeshStandardMaterial({
             color: color ?? Math.random() * 0xffffff

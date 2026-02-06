@@ -9,8 +9,8 @@ export const camera = new THREE.PerspectiveCamera(
     0.1,
     1000
 );
-camera.position.set(0, 5, 10);
-camera.lookAt(0, 0, 0);
+camera.position.set(0, 2, 2);
+camera.lookAt(0, -1, 0);
 
 export const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -20,8 +20,8 @@ document.body.appendChild(renderer.domElement);
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
 scene.add(ambientLight);
 
-const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-directionalLight.position.set(5, 10, 5);
+const directionalLight = new THREE.DirectionalLight(0xffffff, 3);
+directionalLight.position.set(0, 12, 3);
 scene.add(directionalLight);
 
 export function resize() {

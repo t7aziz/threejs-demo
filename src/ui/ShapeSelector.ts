@@ -82,6 +82,16 @@ export function initShapeSelector() {
         border-radius: 4px;
         font-size: 14px;
       ">Fresnel</button>
+      <button id="stripesShaderBtn" style="
+        padding: 10px 20px;
+        margin-left: 10px;
+        cursor: pointer;
+        border: 2px solid transparent;
+        background-color: #555;
+        color: white;
+        border-radius: 4px;
+        font-size: 14px;
+      ">Stripes</button>
     `;
     document.body.appendChild(uiElement);
 
@@ -103,7 +113,8 @@ export function initShapeSelector() {
     const noneShaderBtn = document.getElementById('noneShaderBtn')!;
     const rainbowShaderBtn = document.getElementById('rainbowShaderBtn')!;
     const fresnelShaderBtn = document.getElementById('fresnelShaderBtn')!;
-    const shaderButtons = [noneShaderBtn, rainbowShaderBtn, fresnelShaderBtn];
+    const stripesShaderBtn = document.getElementById('stripesShaderBtn')!;
+    const shaderButtons = [noneShaderBtn, rainbowShaderBtn, fresnelShaderBtn, stripesShaderBtn];
 
     noneShaderBtn.addEventListener('click', () => {
         selectedShader = 'none';
@@ -119,6 +130,11 @@ export function initShapeSelector() {
         selectedShader = 'fresnel';
         updateButtonStyles('fresnelShaderBtn', shaderButtons);
         eventBus.emit('shader-changed', { shader: 'fresnel' });
+    });
+    stripesShaderBtn.addEventListener('click', () => {
+        selectedShader = 'stripes';
+        updateButtonStyles('stripesShaderBtn', shaderButtons);
+        eventBus.emit('shader-changed', { shader: 'stripes' });
     });
 }
 
